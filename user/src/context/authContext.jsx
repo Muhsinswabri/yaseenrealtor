@@ -1,19 +1,28 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+} from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const token = localStorage.getItem("userToken");
+
+    return !!token;
+  });
 
   const login = () => {
     setIsLoggedIn(true);
   };
 
   const logout = () => {
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("user");
+
     setIsLoggedIn(false);
   };
-
-  console.log("AuthProvider is running");
 
   return (
     <AuthContext.Provider

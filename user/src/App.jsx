@@ -8,9 +8,20 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/property" element={<Property />} />
-        <Route path="/property-details/:id" element={<PropertyDetails />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/property"
+          element={<Property />}
+        />
+
+        <Route
+          path="/property-details/:id"
+          element={<PropertyDetails />}
+        />
       </Routes>
     </AuthProvider>
   );
