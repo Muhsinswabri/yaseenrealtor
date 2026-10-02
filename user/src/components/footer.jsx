@@ -2,9 +2,9 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-gray-900 text-white px-16 py-12">
+    <footer className="w-full bg-gray-900 text-white px-5 sm:px-8 lg:px-16 py-12">
 
-      <div className="grid grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
 
         {/* Brand */}
         <div>
@@ -12,10 +12,8 @@ const Footer = () => {
             Yaseen Realtor
           </h2>
 
-          <p className="text-gray-400 mt-4 leading-relaxed">
-            Your trusted property partner.
-            <br />
-            Helping you find the right property.
+          <p className="text-gray-400 mt-4 leading-relaxed text-sm sm:text-base">
+            Your trusted property partner. Helping you find the right property.
           </p>
         </div>
 
@@ -26,13 +24,13 @@ const Footer = () => {
             Quick Links
           </h3>
 
-          <div className="flex flex-col gap-3 mt-5 text-gray-400">
+          <div className="flex flex-col gap-3 mt-4 text-gray-400 text-sm sm:text-base">
 
-            <a href="/" className="hover:text-white">
+            <a href="/" className="hover:text-white transition">
               Home
             </a>
 
-            <a href="/property" className="hover:text-white">
+            <a href="/property" className="hover:text-white transition">
               Properties
             </a>
 
@@ -46,11 +44,11 @@ const Footer = () => {
             Contact
           </h3>
 
-          <div className="flex flex-col gap-3 mt-5 text-gray-400">
+          <div className="flex flex-col gap-3 mt-4 text-gray-400 text-sm sm:text-base">
 
             <p>+91 98765 43210</p>
 
-            <p>yaseenrealtor@gmail.com</p>
+            <p className="break-all">yaseenrealtor@gmail.com</p>
 
             <p>Malappuram, Kerala</p>
 
@@ -64,17 +62,17 @@ const Footer = () => {
             Follow Us
           </h3>
 
-          <div className="flex gap-4 mt-5">
+          <div className="flex gap-4 mt-4">
 
-            <span className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-600">
+            <span className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-600 hover:border-white transition cursor-pointer">
               f
             </span>
 
-            <span className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-600">
+            <span className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-600 hover:border-white transition cursor-pointer">
               in
             </span>
 
-            <span className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-600">
+            <span className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-600 hover:border-white transition cursor-pointer">
               ▶
             </span>
 
@@ -85,7 +83,7 @@ const Footer = () => {
 
 
       {/* Bottom */}
-      <div className="border-t border-gray-700 mt-10 pt-6 flex justify-between text-sm text-gray-500">
+      <div className="max-w-7xl mx-auto border-t border-gray-800 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400 text-center sm:text-left">
 
         <p>
           © 2026 Yaseen Realtor. All rights reserved.

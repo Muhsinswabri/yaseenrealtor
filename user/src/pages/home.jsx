@@ -145,21 +145,21 @@ const Home = () => {
         </div>
 
         {/* Location Buttons */}
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-5 mt-8 lg:mt-10">
+        <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-4 mt-6 sm:mt-8 lg:mt-10 overflow-x-auto pb-2 px-2 no-scrollbar">
 
-          <button className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-gray-900 text-white text-sm sm:text-base">
+          <button className="whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full bg-gray-900 text-white text-xs sm:text-sm font-medium shrink-0">
             All
           </button>
 
-          <button className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full border border-gray-300 text-sm sm:text-base">
+          <button className="whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full border border-gray-300 text-gray-700 text-xs sm:text-sm font-medium hover:border-gray-900 shrink-0 transition">
             Malappuram
           </button>
 
-          <button className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full border border-gray-300 text-sm sm:text-base">
+          <button className="whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full border border-gray-300 text-gray-700 text-xs sm:text-sm font-medium hover:border-gray-900 shrink-0 transition">
             Kozhikode
           </button>
 
-          <button className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full border border-gray-300 text-sm sm:text-base">
+          <button className="whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full border border-gray-300 text-gray-700 text-xs sm:text-sm font-medium hover:border-gray-900 shrink-0 transition">
             Ernakulam
           </button>
 

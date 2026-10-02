@@ -78,14 +78,14 @@ const Property = () => {
       {/* Location Filter */}
       <section className="w-full px-5 sm:px-8 lg:px-12 xl:px-16">
 
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-5">
+        <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto pb-2 px-2 no-scrollbar">
 
           <button
             onClick={() => setSelectedLocation("All")}
-            className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base ${
+            className={`whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium shrink-0 transition ${
               selectedLocation === "All"
                 ? "bg-gray-900 text-white"
-                : "border border-gray-300 text-gray-700"
+                : "border border-gray-300 text-gray-700 hover:border-gray-900"
             }`}
           >
             All
@@ -93,10 +93,10 @@ const Property = () => {
 
           <button
             onClick={() => setSelectedLocation("Malappuram")}
-            className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base ${
+            className={`whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium shrink-0 transition ${
               selectedLocation === "Malappuram"
                 ? "bg-gray-900 text-white"
-                : "border border-gray-300 text-gray-700"
+                : "border border-gray-300 text-gray-700 hover:border-gray-900"
             }`}
           >
             Malappuram
@@ -104,10 +104,10 @@ const Property = () => {
 
           <button
             onClick={() => setSelectedLocation("Kozhikode")}
-            className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base ${
+            className={`whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium shrink-0 transition ${
               selectedLocation === "Kozhikode"
                 ? "bg-gray-900 text-white"
-                : "border border-gray-300 text-gray-700"
+                : "border border-gray-300 text-gray-700 hover:border-gray-900"
             }`}
           >
             Kozhikode
@@ -115,10 +115,10 @@ const Property = () => {
 
           <button
             onClick={() => setSelectedLocation("Ernakulam")}
-            className={`px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-base ${
+            className={`whitespace-nowrap px-5 sm:px-8 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium shrink-0 transition ${
               selectedLocation === "Ernakulam"
                 ? "bg-gray-900 text-white"
-                : "border border-gray-300 text-gray-700"
+                : "border border-gray-300 text-gray-700 hover:border-gray-900"
             }`}
           >
             Ernakulam
@@ -148,7 +148,11 @@ const Property = () => {
 
                 {/* Property Image */}
                 <img
-                  src={property.image}
+                  src={
+                    property.images && property.images.length > 0
+                      ? property.images[0]
+                      : property.image || ""
+                  }
                   alt={property.name}
                   className="w-full h-60 sm:h-64 object-cover"
                 />
