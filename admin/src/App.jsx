@@ -3,11 +3,21 @@ import AdminDashboard from "./pages/adminDashboard.jsx";
 import AddProperty from "./pages/addProperty.jsx";
 import EditProperty from "./pages/editProperty.jsx";
 import AdminProtectedRoute from "./components/adminProtectedRoute";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (
     <Routes>
+      <Route
+        path="/"
+        element={<Navigate to="/admin/login" replace />}
+      />
+
+      <Route
+        path="/admin"
+        element={<Navigate to="/admin/login" replace />}
+      />
+
       <Route
         path="/admin/login"
         element={<AdminLogin />}
@@ -29,6 +39,11 @@ function App() {
           element={<EditProperty />}
         />
       </Route>
+
+      <Route
+        path="*"
+        element={<Navigate to="/admin/login" replace />}
+      />
     </Routes>
   );
 }

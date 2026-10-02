@@ -177,7 +177,7 @@ const AdminDashboard = () => {
 
                   {/* Image */}
                   <img
-                    src={property.image}
+                    src={property.images?.[0] || ""}
                     alt={property.name}
                     className="w-full h-52 sm:h-60 object-cover"
                   />

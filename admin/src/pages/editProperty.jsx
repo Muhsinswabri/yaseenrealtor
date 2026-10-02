@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditProperty = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -12,9 +12,12 @@ const EditProperty = () => {
     beds: "",
     baths: "",
     area: "",
-    image: "",
     description: "",
   });
+
+  const [currentImages, setCurrentImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -30,8 +33,9 @@ const EditProperty = () => {
         const data = await response.json();
 
         if (!response.ok) {
-          setError(data.message || "Failed to fetch property");
-          return;
+          throw new Error(
+            data.message || "Failed to fetch property"
+          );
         }
 
         setFormData({
@@ -41,12 +45,12 @@ const EditProperty = () => {
           beds: data.beds || "",
           baths: data.baths || "",
           area: data.area || "",
-          image: data.image || "",
           description: data.description || "",
         });
+
+        setCurrentImages(data.images || []);
       } catch (error) {
-        console.error("Failed to fetch property:", error);
-        setError("Unable to connect to server");
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -58,53 +62,86 @@ const EditProperty = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    if (files.length === 0) {
+      return;
+    }
+
+    if (files.length > 10) {
+      setError("You can upload a maximum of 10 images.");
+      return;
+    }
+
+    setError("");
+
+    setNewImages(files);
+
+    const previewUrls = files.map((file) =>
+      URL.createObjectURL(file)
+    );
+
+    setPreviews(previewUrls);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
-    setSaving(true);
 
     const token = localStorage.getItem("adminToken");
 
+    if (!token) {
+      navigate("/admin/login");
+      return;
+    }
+
+    const data = new FormData();
+
+    data.append("name", formData.name);
+    data.append("location", formData.location);
+    data.append("price", formData.price);
+    data.append("beds", formData.beds);
+    data.append("baths", formData.baths);
+    data.append("area", formData.area);
+    data.append("description", formData.description);
+
+    newImages.forEach((image) => {
+      data.append("images", image);
+    });
+
     try {
+      setSaving(true);
+
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/properties/${id}`,
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            name: formData.name,
-            location: formData.location,
-            price: Number(formData.price),
-            beds: Number(formData.beds),
-            baths: Number(formData.baths),
-            area: Number(formData.area),
-            image: formData.image,
-            description: formData.description,
-          }),
+          body: data,
         }
       );
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Failed to update property");
-        return;
+        throw new Error(
+          result.message || "Failed to update property"
+        );
       }
 
       navigate("/admin/dashboard");
     } catch (error) {
-      console.error("Update property failed:", error);
-      setError("Unable to connect to server");
+      setError(error.message);
     } finally {
       setSaving(false);
     }
@@ -112,97 +149,86 @@ const EditProperty = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center px-5">
-        <p className="text-gray-500">
-          Loading property...
-        </p>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        Loading property...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f5f5f5",
+        padding: "30px 20px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "900px",
+          margin: "0 auto",
+          background: "#fff",
+          padding: "30px",
+          borderRadius: "12px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h1 style={{ marginBottom: "25px" }}>
+          Edit Property
+        </h1>
 
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+        {error && (
+          <div
+            style={{
+              background: "#ffe5e5",
+              color: "#c00",
+              padding: "12px",
+              borderRadius: "6px",
+              marginBottom: "20px",
+            }}
+          >
+            {error}
+          </div>
+        )}
 
-        <div className="px-5 sm:px-8 lg:px-12 py-5">
-
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
+        <form onSubmit={handleSubmit}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: "20px",
+            }}
+          >
             <div>
-              <p className="text-xs sm:text-sm tracking-widest text-yellow-700 uppercase">
-                Yaseen Realtor
-              </p>
-
-              <h1 className="text-2xl sm:text-3xl font-bold mt-1">
-                Edit Property
-              </h1>
-            </div>
-
-            <button
-              onClick={() => navigate("/admin/dashboard")}
-              className="w-full sm:w-auto px-5 py-3 rounded-lg border border-gray-300 bg-white text-sm hover:bg-gray-50 transition"
-            >
-              ← Back to Dashboard
-            </button>
-
-          </div>
-
-        </div>
-
-      </header>
-
-      {/* Form */}
-      <main className="w-full px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
-
-        <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl border border-gray-200 p-5 sm:p-8 lg:p-10">
-
-          <div className="mb-8">
-
-            <h2 className="text-xl sm:text-2xl font-bold">
-              Update Property Information
-            </h2>
-
-            <p className="text-sm sm:text-base text-gray-500 mt-2">
-              Update the details of this property.
-            </p>
-
-          </div>
-
-          <form onSubmit={handleSubmit}>
-
-            {/* Property Name */}
-            <div className="mb-5">
-
-              <label className="block text-sm font-medium mb-2">
-                Property Name
-              </label>
+              <label>Property Name</label>
 
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Enter property name"
                 required
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900"
+                style={inputStyle}
               />
-
             </div>
 
-            {/* Location */}
-            <div className="mb-5">
-
-              <label className="block text-sm font-medium mb-2">
-                Location
-              </label>
+            <div>
+              <label>Location</label>
 
               <select
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900 bg-white"
+                style={inputStyle}
               >
                 <option value="Malappuram">
                   Malappuram
@@ -216,167 +242,248 @@ const EditProperty = () => {
                   Ernakulam
                 </option>
               </select>
-
             </div>
 
-            {/* Price */}
-            <div className="mb-5">
-
-              <label className="block text-sm font-medium mb-2">
-                Price
-              </label>
+            <div>
+              <label>Price</label>
 
               <input
                 type="number"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                placeholder="Enter property price"
                 required
-                min="0"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900"
+                style={inputStyle}
               />
-
             </div>
 
-            {/* Beds / Baths / Area */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-5">
-
-              <div>
-
-                <label className="block text-sm font-medium mb-2">
-                  Beds
-                </label>
-
-                <input
-                  type="number"
-                  name="beds"
-                  value={formData.beds}
-                  onChange={handleChange}
-                  placeholder="Beds"
-                  required
-                  min="0"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900"
-                />
-
-              </div>
-
-              <div>
-
-                <label className="block text-sm font-medium mb-2">
-                  Baths
-                </label>
-
-                <input
-                  type="number"
-                  name="baths"
-                  value={formData.baths}
-                  onChange={handleChange}
-                  placeholder="Baths"
-                  required
-                  min="0"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900"
-                />
-
-              </div>
-
-              <div>
-
-                <label className="block text-sm font-medium mb-2">
-                  Area (sqft)
-                </label>
-
-                <input
-                  type="number"
-                  name="area"
-                  value={formData.area}
-                  onChange={handleChange}
-                  placeholder="Area"
-                  required
-                  min="0"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900"
-                />
-
-              </div>
-
-            </div>
-
-            {/* Image URL */}
-            <div className="mb-5">
-
-              <label className="block text-sm font-medium mb-2">
-                Image URL
-              </label>
+            <div>
+              <label>Bedrooms</label>
 
               <input
-                type="url"
-                name="image"
-                value={formData.image}
+                type="number"
+                name="beds"
+                value={formData.beds}
                 onChange={handleChange}
-                placeholder="https://example.com/property-image.jpg"
                 required
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900"
+                style={inputStyle}
               />
-
             </div>
 
-            {/* Description */}
-            <div className="mb-6">
+            <div>
+              <label>Bathrooms</label>
 
-              <label className="block text-sm font-medium mb-2">
-                Description
-              </label>
-
-              <textarea
-                name="description"
-                value={formData.description}
+              <input
+                type="number"
+                name="baths"
+                value={formData.baths}
                 onChange={handleChange}
-                placeholder="Enter property description"
                 required
-                rows="6"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm sm:text-base outline-none focus:border-gray-900 resize-none"
+                style={inputStyle}
               />
-
             </div>
 
-            {/* Error */}
-            {error && (
-              <p className="mb-5 text-sm text-red-600">
-                {error}
+            <div>
+              <label>Area (sq ft)</label>
+
+              <input
+                type="number"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                required
+                style={inputStyle}
+              />
+            </div>
+          </div>
+
+          <div style={{ marginTop: "25px" }}>
+            <label>Current Property Images</label>
+
+            {currentImages.length > 0 ? (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fill, minmax(140px, 1fr))",
+                  gap: "12px",
+                  marginTop: "12px",
+                }}
+              >
+                {currentImages.map((image, index) => (
+                  <div key={index}>
+                    <img
+                      src={image}
+                      alt={`Current property ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "130px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        border: "1px solid #ddd",
+                      }}
+                    />
+
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        color: "#666",
+                        marginTop: "5px",
+                      }}
+                    >
+                      Image {index + 1}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: "#777" }}>
+                No images available.
               </p>
             )}
+          </div>
 
-            {/* Buttons */}
-            <div className="flex flex-col-reverse sm:flex-row gap-3">
+          <div style={{ marginTop: "25px" }}>
+            <label>Replace Property Images</label>
 
-              <button
-                type="button"
-                onClick={() => navigate("/admin/dashboard")}
-                className="w-full sm:flex-1 py-3 rounded-lg border border-gray-300 text-sm font-medium hover:bg-gray-50 transition"
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              style={{
+                display: "block",
+                marginTop: "8px",
+              }}
+            />
+
+            <small
+              style={{
+                display: "block",
+                marginTop: "8px",
+                color: "#666",
+              }}
+            >
+              Select up to 10 new images. Selecting new
+              images will replace the current images.
+            </small>
+          </div>
+
+          {previews.length > 0 && (
+            <div style={{ marginTop: "20px" }}>
+              <p>
+                New Images ({newImages.length})
+              </p>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fill, minmax(140px, 1fr))",
+                  gap: "12px",
+                }}
               >
-                Cancel
-              </button>
+                {previews.map((preview, index) => (
+                  <div key={index}>
+                    <img
+                      src={preview}
+                      alt={`New property ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "130px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        border: "1px solid #ddd",
+                      }}
+                    />
 
-              <button
-                type="submit"
-                disabled={saving}
-                className="w-full sm:flex-1 py-3 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition disabled:opacity-50"
-              >
-                {saving
-                  ? "Updating Property..."
-                  : "Update Property"}
-              </button>
-
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        color: "#666",
+                        marginTop: "5px",
+                      }}
+                    >
+                      New Image {index + 1}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
-          </form>
+          <div style={{ marginTop: "25px" }}>
+            <label>Description</label>
 
-        </div>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              rows="6"
+              style={{
+                ...inputStyle,
+                resize: "vertical",
+              }}
+            />
+          </div>
 
-      </main>
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              marginTop: "25px",
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              type="submit"
+              disabled={saving}
+              style={{
+                padding: "12px 25px",
+                border: "none",
+                borderRadius: "6px",
+                background: "#111",
+                color: "#fff",
+                cursor: saving
+                  ? "not-allowed"
+                  : "pointer",
+              }}
+            >
+              {saving
+                ? "Uploading..."
+                : "Update Property"}
+            </button>
 
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/admin/dashboard")
+              }
+              style={{
+                padding: "12px 25px",
+                border: "1px solid #ddd",
+                borderRadius: "6px",
+                background: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginTop: "7px",
+  border: "1px solid #ddd",
+  borderRadius: "6px",
+  boxSizing: "border-box",
 };
 
 export default EditProperty;

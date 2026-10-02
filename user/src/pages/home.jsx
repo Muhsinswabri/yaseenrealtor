@@ -184,7 +184,11 @@ const Home = () => {
               >
 
                 <img
-                  src={property.image}
+                  src={
+     property.images && property.images.length > 0
+    ? property.images[0]
+    : property.image
+}
                   alt={property.name}
                   className="w-full h-60 sm:h-64 object-cover"
                 />
