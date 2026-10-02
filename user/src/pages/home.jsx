@@ -118,7 +118,7 @@ const Home = () => {
             className="w-full h-full object-cover"
           />
 
-          <div className="absolute inset-y-0 left-0 w-full lg:w-1/3 bg-gradient-to-r from-white to-transparent"></div>
+          <div className="hidden lg:block absolute inset-y-0 left-0 lg:w-1/3 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
 
         </div>
 
