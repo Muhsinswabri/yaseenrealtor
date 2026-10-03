@@ -113,9 +113,46 @@ const PropertyDetails = () => {
 
   const whatsappNumber = "918089525426";
 
-  const whatsappMessage = encodeURIComponent(
-    `Hi, I am interested in ${property.name} in ${property.location}.`
+  // Read logged-in user's name from localStorage (stored at login as JSON)
+  const clientName = (() => {
+    try {
+      const u = JSON.parse(localStorage.getItem("user")) || {};
+      return u.name || u.fullName || u.username || "Client";
+    } catch {
+      return "Client";
+    }
+  })();
+
+  // Build dynamic inquiry message with graceful fallbacks
+  const propName     = property.name     || "N/A";
+  const propLocation = property.location || "N/A";
+  const propPrice    = property.price != null
+    ? `₹${Number(property.price).toLocaleString("en-IN")}`
+    : "N/A";
+
+  const bedsStr  = property.beds  != null ? `${property.beds} Beds`   : null;
+  const bathsStr = property.baths != null ? `${property.baths} Baths` : null;
+  const bedsAndBaths = [bedsStr, bathsStr].filter(Boolean).join(" | 🛁 ");
+
+  const areaStr = property.area != null ? `${property.area} sq ft` : null;
+
+  const lines = [
+    `Hi Yaseen, I'm ${clientName}, interested in the following property:`,
+    "",
+    `🏠 ${propName}`,
+    `📍 ${propLocation}`,
+    `💰 ${propPrice}`,
+  ];
+
+  if (bedsAndBaths) lines.push(`🛏️ ${bedsAndBaths}`);
+  if (areaStr)      lines.push(`📐 ${areaStr}`);
+
+  lines.push(
+    "",
+    "I'd like to know more about this property, including its availability and additional details. Please get in touch with me."
   );
+
+  const whatsappMessage = encodeURIComponent(lines.join("\n"));
 
   return (
     <div

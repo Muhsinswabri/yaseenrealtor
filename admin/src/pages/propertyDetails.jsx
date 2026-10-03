@@ -67,33 +67,47 @@ const PropertyDetails = () => {
   const handleBooking = (e) => {
     e.preventDefault();
 
-    const name = e.target.name.value;
-    const phone = e.target.phone.value;
-    const email = e.target.email.value;
+    const clientName = e.target.name.value  || "Client";
+    const phone      = e.target.phone.value || "";
+    const email      = e.target.email.value || "";
 
-    const message = `
-Hello Yaseen Realtor,
+    // Graceful fallbacks for optional property fields
+    const propName     = property.name     || "N/A";
+    const propLocation = property.location || "N/A";
+    const propPrice    = property.price != null
+      ? `₹${Number(property.price).toLocaleString("en-IN")}`
+      : "N/A";
 
-I am interested in the following property.
+    const bedsStr  = property.beds  != null ? `${property.beds} Beds`   : null;
+    const bathsStr = property.baths != null ? `${property.baths} Baths` : null;
+    const bedsAndBaths = [bedsStr, bathsStr].filter(Boolean).join(" | 🛁 ");
 
-Property: ${property.name}
-Location: ${property.location}
-Price: ₹${property.price.toLocaleString("en-IN")}
+    const areaStr = property.area != null ? `${property.area} sq ft` : null;
 
-My Details:
+    const lines = [
+      `Hi Yaseen, I'm ${clientName}, interested in the following property:`,
+      "",
+      `🏠 ${propName}`,
+      `📍 ${propLocation}`,
+      `💰 ${propPrice}`,
+    ];
 
-Name: ${name}
-Phone: ${phone}
-Email: ${email}
+    if (bedsAndBaths) lines.push(`🛏️ ${bedsAndBaths}`);
+    if (areaStr)      lines.push(`📐 ${areaStr}`);
 
-I would like to know more about this property and the booking process.
-    `;
+    lines.push(
+      "",
+      "I'd like to know more about this property, including its availability and additional details. Please get in touch with me."
+    );
+
+    if (phone || email) {
+      lines.push("", "My contact details:");
+      if (phone) lines.push(`📞 ${phone}`);
+      if (email) lines.push(`✉️ ${email}`);
+    }
 
     const whatsappNumber = "918089525426";
-
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-      message
-    )}`;
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
 
     window.open(whatsappUrl, "_blank");
 
