@@ -18,8 +18,8 @@ const app = express();
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
+      "https://yaseenrealtor.vercel.app",
       "https://user-three-ruby.vercel.app",
-      "https://yaseenrealor.vercel.app",
       "http://localhost:5173",
       "http://localhost:3000"
     ];
