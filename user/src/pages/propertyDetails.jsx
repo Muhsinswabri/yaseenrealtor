@@ -111,7 +111,7 @@ const PropertyDetails = () => {
     );
   };
 
-  const whatsappNumber = "919876543210";
+  const whatsappNumber = "918089525426";
 
   const whatsappMessage = encodeURIComponent(
     `Hi, I am interested in ${property.name} in ${property.location}.`

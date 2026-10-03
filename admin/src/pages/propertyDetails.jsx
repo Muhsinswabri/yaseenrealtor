@@ -89,7 +89,7 @@ Email: ${email}
 I would like to know more about this property and the booking process.
     `;
 
-    const whatsappNumber = "919876543210";
+    const whatsappNumber = "918089525426";
 
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
       message

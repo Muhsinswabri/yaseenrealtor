@@ -46,7 +46,7 @@ const Footer = () => {
 
           <div className="flex flex-col gap-3 mt-4 text-gray-400 text-sm sm:text-base">
 
-            <p>+91 98765 43210</p>
+            <p>+91 80895 25426</p>
 
             <p className="break-all">yaseenrealtor@gmail.com</p>
 
